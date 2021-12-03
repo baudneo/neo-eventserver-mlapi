@@ -93,8 +93,8 @@ RUN set -x \
     && sed -i "/^\[customize\]$/,/^\[/ s|^use_hooks.*=.*|use_hooks=yes|" /zoneminder/defaultconfiges/zmeventnotification.ini \
     && sed -i "/^\[network\]$/,/^\[/ s|^.*address.*=.*|address=0.0.0.0|" /zoneminder/defaultconfiges/zmeventnotification.ini \
     && sed -i "/^\[auth\]$/,/^\[/ s|^enable.*=.*|enable=no|" /zoneminder/defaultconfiges/zmeventnotification.ini
-RUN sed -i "s|ml_enable:.*|ml_enable: \"yes\"|" /zoneminder/defaultconfiges/objectconfig.yml \
-    && sed -i "s|gateway:.*|gateway: \"http://${MLAPI_CONTAINER}:${MLAPI_PORT}/api/v1\"|" /zoneminder/defaultconfiges/objectconfig.yml
+RUN sed -i "s|ml_enable:.*|ml_enable: yes|" /zoneminder/defaultconfiges/objectconfig.yml \
+    && sed -i "s|gateway:.*|gateway: http://${MLAPI_CONTAINER}:${MLAPI_PORT}/api/v1|" /zoneminder/defaultconfiges/objectconfig.yml
 
 # Fix default es secrets
 RUN set -x \
