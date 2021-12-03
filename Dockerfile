@@ -104,7 +104,7 @@ RUN sed -i "s|ml_enable:.*|ml_enable: yes|" /zoneminder/defaultconfiges/objectco
 RUN set -x \
     && sed -i "/^\[secrets\]$/,/^\[/ s|^ES_CERT_FILE.*=.*|ES_CERT_FILE=/config/ssl/cert.cer|" /zoneminder/defaultconfiges/secrets.ini \
     && sed -i "/^\[secrets\]$/,/^\[/ s|^ES_KEY_FILE.*=.*|ES_KEY_FILE=/config/ssl/key.pem|" /zoneminder/defaultconfiges/secrets.ini
-
+RUN apt-get install -y openssl libssl-dev
 # Copy rootfs
 COPY --from=rootfs-converter /rootfs /
 
