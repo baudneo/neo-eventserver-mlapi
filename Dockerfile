@@ -45,6 +45,10 @@ RUN set -x \
 #####################################################################
 FROM ghcr.io/zoneminder-containers/zoneminder-base:${ZM_VERSION}
 ARG ES_VERSION
+ARG MLAPI_CONTAINER
+ARG MLAPI_PORT
+ARG MLAPIDB_USER
+ARG MLAPIDB_PASS
 
 RUN set -x \
     && apt-get update \
