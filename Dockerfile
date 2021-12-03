@@ -1,6 +1,10 @@
 # syntax=docker/dockerfile:experimental
 ARG ZM_VERSION=main
 ARG ES_VERSION=master
+ARG MLAPIDB_USER=mlapi_user
+ARG MLAPIDB_PASS=ZoneMinder
+ARG MLAPI_CONTAINER=mlapi
+ARG MLAPI_PORT=5000
 
 #####################################################################
 #                                                                   #
@@ -106,10 +110,7 @@ ENV \
     ES_ENABLE_AUTH=0\
     ES_ENABLE_DHPARAM=1\
     USE_SECURE_RANDOM_ORG=1\
-    MLAPIDB_USER=mlapi_user\
-    MLAPIDB_PASS=ZoneMinder\
-    MLAPI_CONTAINER=mlapi\
-    MLAPI_PORT=5000
+
 
 
 #LABEL com.github.baudneo.es_version=${ES_VERSION}
