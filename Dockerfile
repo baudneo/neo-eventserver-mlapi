@@ -60,6 +60,10 @@ RUN set -x \
     && apt-get remove --purge -y \
         build-essential \
     && rm -rf /var/lib/apt/lists/*
+
+# Neo PYZM
+RUN   python3 -m pip install git+https://github.com/baudneo/pyzm.git
+
 # Need 'hook' to send detection to mlapi
 RUN --mount=type=bind,target=/tmp/eventserver,source=/eventserverdownloader,from=eventserverdownloader,rw \
     set -x \
@@ -70,13 +74,12 @@ RUN --mount=type=bind,target=/tmp/eventserver,source=/eventserverdownloader,from
         ./install.sh \
             --install-es \
             --install-hook \
-            --install-pyzm \
+            --no-install-pyzm \
             --install-config \
             --no-interactive \
             --no-pysudo \
-            --no-hook-config-upgrade \
     && mkdir -p /zoneminder/estools \
-    && cp ./tools/* /zoneminder/estools \
+    && cp ./tools/* /zoneminder/estools
 # Fix default es and mlapi config
 # https://stackoverflow.com/a/16987794
 RUN set -x \
@@ -85,9 +88,9 @@ RUN set -x \
     && sed -i "/^\[customize\]$/,/^\[/ s|^console_logs.*=.*|console_logs=yes|" /zoneminder/defaultconfiges/zmeventnotification.ini \
     && sed -i "/^\[customize\]$/,/^\[/ s|^use_hooks.*=.*|use_hooks=yes|" /zoneminder/defaultconfiges/zmeventnotification.ini \
     && sed -i "/^\[network\]$/,/^\[/ s|^.*address.*=.*|address=0.0.0.0|" /zoneminder/defaultconfiges/zmeventnotification.ini \
-    && sed -i "/^\[auth\]$/,/^\[/ s|^enable.*=.*|enable=no|" /zoneminder/defaultconfiges/zmeventnotification.ini \
-    && sed -i "s/ml_enable:.*$/ml_enable: \"yes\"/g" /zoneminder/defaultconfiges/objectconfig.yml \
-    && sed -i "s/gateway:.*$/gateway: \"http://${MLAPI_CONTAINER}:${MLAPI_PORT}/api/v1\"/g" /zoneminder/defaultconfiges/objectconfig.yml
+    && sed -i "/^\[auth\]$/,/^\[/ s|^enable.*=.*|enable=no|" /zoneminder/defaultconfiges/zmeventnotification.ini
+RUN sed -i "s|ml_enable:.*|ml_enable: \"yes\"|" /zoneminder/defaultconfiges/objectconfig.yml \
+    && sed -i "s|gateway:.*|gateway: \"http://${MLAPI_CONTAINER}:${MLAPI_PORT}/api/v1\"|" /zoneminder/defaultconfiges/objectconfig.yml
 
 # Fix default es secrets
 RUN set -x \
@@ -97,14 +100,15 @@ RUN set -x \
 # Copy rootfs
 COPY --from=rootfs-converter /rootfs /
 
-ENV ES_DEBUG_ENABLED=1
-    ES_COMMON_NAME=localhost
-    ES_ENABLE_AUTH=0
-    ES_ENABLE_DHPARAM=1
-    USE_SECURE_RANDOM_ORG=1
-    MLAPIDB_USER=mlapi_user
-    MLAPIDB_PASS=ZoneMinder
-    MLAPI_CONTAINER=mlapi
+ENV \
+    ES_DEBUG_ENABLED=1\
+    ES_COMMON_NAME=localhost\
+    ES_ENABLE_AUTH=0\
+    ES_ENABLE_DHPARAM=1\
+    USE_SECURE_RANDOM_ORG=1\
+    MLAPIDB_USER=mlapi_user\
+    MLAPIDB_PASS=ZoneMinder\
+    MLAPI_CONTAINER=mlapi\
     MLAPI_PORT=5000
 
 
