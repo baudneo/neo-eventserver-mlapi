@@ -10,8 +10,13 @@ if [ ! -f "/config/zmeventnotification.ini" ]; then
     cp -r /zoneminder/defaultconfiges/* /config
 
 fi
+pyzm_check=$(python3 -m pip list | grep "^neo-pyzm")
+if [ -z "$pyzm_check" ]; then
+  echo "Installing neo-pyzm" | info "[${program_name}] "
+    python3 -m pip install git+https://github.com/baudneo/pyzm.git
+fi
 if [ ! -f "/config/objectconfig.yml" ]; then
-  echo "Copying Object Detection (Hooks) Configuration with Secrets" | init "[${program_name}] "
+  echo "Copying Object Detection (Hooks) Configuration with Secrets" | info "[${program_name}] "
   s6-setuidgid www-data \
     cp -r /zoneminder/defaultconfiges/hooks/objectconfig.yml /config
 fi

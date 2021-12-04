@@ -67,11 +67,6 @@ RUN set -x \
     && yes | perl -MCPAN -e "install YAML::XS"
 
 
-# Neo PYZM
-RUN   python3 -m pip install git+https://github.com/baudneo/pyzm.git
-RUN   apt-get remove --purge -y \
-        build-essential \
-    && rm -rf /var/lib/apt/lists/*
 # Need 'hook' to send detection to mlapi
 RUN --mount=type=bind,target=/tmp/eventserver,source=/eventserverdownloader,from=eventserverdownloader,rw \
     set -x \
