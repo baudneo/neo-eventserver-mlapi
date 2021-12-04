@@ -64,7 +64,7 @@ RUN set -x \
     && yes | perl -MCPAN -e "install Time::Piece" \
     && yes | perl -MCPAN -e "install Net::MQTT::Simple" \
     && yes | perl -MCPAN -e "install YAML::Tiny" \
-    && yes | perl -MCPAN -e "install YAML::XS" \
+    && yes | perl -MCPAN -e "install YAML::XS"
 
 
 # Neo PYZM
@@ -96,9 +96,9 @@ RUN set -x \
     && sed -i "/^\[customize\]$/,/^\[/ s|^console_logs.*=.*|console_logs=yes|" /zoneminder/defaultconfiges/zmeventnotification.ini \
     && sed -i "/^\[customize\]$/,/^\[/ s|^use_hooks.*=.*|use_hooks=yes|" /zoneminder/defaultconfiges/zmeventnotification.ini \
     && sed -i "/^\[network\]$/,/^\[/ s|^.*address.*=.*|address=0.0.0.0|" /zoneminder/defaultconfiges/zmeventnotification.ini \
-    && sed -i "/^\[auth\]$/,/^\[/ s|^enable.*=.*|enable=no|" /zoneminder/defaultconfiges/zmeventnotification.ini
-RUN sed -i "s|ml_enable:.*|ml_enable: yes|" /zoneminder/defaultconfiges/objectconfig.yml \
-    && sed -i "s|gateway:.*|gateway: http://mlapi:5000/api/v1|" /zoneminder/defaultconfiges/objectconfig.yml
+    && sed -i "/^\[auth\]$/,/^\[/ s|^enable.*=.*|enable=no|" /zoneminder/defaultconfiges/zmeventnotification.ini \
+    && sed -i "s|ml_enable:.*|ml_enable: yes|" /zoneminder/defaultconfiges/hook/objectconfig.yml \
+    && sed -i "s|gateway:.*|gateway: http://${MLAPI_CONTAINER}:${MLAPI_PORT}/api/v1|" /zoneminder/defaultconfiges/hook/objectconfig.yml
 
 # Fix default es secrets
 RUN set -x \
