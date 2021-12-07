@@ -32,19 +32,25 @@ services:
       - ./zm/data:/data
       - ./zm/config:/config
       - ./zm/log:/log
-      #    Also possible to upgrade pyzm by replacing it with the pyzm folder from the repo
-      #    The file structure is pyzm/ ->
-      #                                   /helpers
-      #                                   /ml
-      #                                   api.py, ZMLog.py, ZMMemory.py, ZMEventNotification.py (some other files depending on version)
-#      - ./zm/pyzm:/usr/local/lib/python3.8/dist-packages/pyzm
+      - # Intel VAAPI, you may need to edit and customize the exact path
+      - /dev/dri:/dev/dri
       - type: tmpfs
         target: /dev/shm
         tmpfs:
           size: 1000000000
     env_file:
       - ./.env
-#    environment:
+# NVIDIA GPU Example
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [ gpu, compute, video, utility ]
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=all
+      - NVIDIA_DRIVER_CAPABILITIES=compute,utility,video
 #      - ZM_SERVER_HOST=zoneminder1
 
 

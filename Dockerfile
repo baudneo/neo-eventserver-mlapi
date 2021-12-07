@@ -102,6 +102,42 @@ RUN set -x \
     && cp /zoneminder/estools/es.debug.objdet /usr/bin/es.d \
     && cp /zoneminder/estools/es.baredebug.objdet /usr/bin/es.bd \
     && rm -rf /tmp/eventserver
+
+# Intel VAAPI
+RUN apt-get install -y gnupg \
+    && wget -qO - https://repositories.intel.com/graphics/intel-graphics.key | apt-key add - \
+    && echo 'deb [arch=amd64] https://repositories.intel.com/graphics/ubuntu focal main' > /etc/apt/sources.list.d/intel-graphics.list \
+    && apt-key adv --keyserver keyserver.ubuntu.com --recv-keys F63F0F2B90935439 \
+    && echo 'deb http://ppa.launchpad.net/kisak/kisak-mesa/ubuntu focal main' > /etc/apt/sources.list.d/kisak-mesa-focal.list \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN apt-get -qq update \
+    && apt-get -qq install --no-install-recommends -y \
+    libva-drm2 libva2 libmfx1 i965-va-driver vainfo intel-media-va-driver-non-free mesa-vdpau-drivers mesa-va-drivers mesa-vdpau-drivers libdrm-radeon1 \
+    && rm -rf /var/lib/apt/lists/*
+
+# nvidia layer (see https://gitlab.com/nvidia/container-images/cuda/blob/master/dist/11.1/ubuntu20.04-x86_64/base/Dockerfile)
+RUN apt-get update && apt-get install -y --no-install-recommends \
+      curl \
+    && wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/cuda-ubuntu1804.pin \
+    && sudo mv ./cuda-ubuntu1804.pin /etc/apt/preferences.d/cuda-repository-pin-600 \
+    && curl -fSsL https://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/7fa2af80.pub | apt-key add - \
+    && echo "deb https://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64 /" > /etc/apt/sources.list.d/cuda.list \
+    && echo "deb https://developer.download.nvidia.com/compute/machine-learning/repos/ubuntu1804/x86_64 /" > /etc/apt/sources.list.d/nvidia-ml.list \
+    && rm -rf /var/lib/apt/lists/*
+# CUDA
+ENV CUDA_VERSION 10.2
+# For libraries in the cuda-compat-* package: https://docs.nvidia.com/cuda/eula/index.html#attachment-a
+RUN apt-get update && apt-get install -y --no-install-recommends \
+        cuda-cudart-10-2=10.2.89-1 \
+        cuda-compat-10-2=440.95.01-1 \
+    && ln -s cuda-10.2 /usr/local/cuda \
+    && rm -rf /var/lib/apt/lists/*
+
+# Required for nvidia-docker v1
+RUN echo "/usr/local/nvidia/lib" >> /etc/ld.so.conf.d/nvidia.conf && \
+    echo "/usr/local/nvidia/lib64" >> /etc/ld.so.conf.d/nvidia.conf
+
 # Fix default es config for mlapi
 # https://stackoverflow.com/a/16987794
 # This sets where the tokens.txt file will be created as well
