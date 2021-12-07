@@ -186,7 +186,7 @@ ENV \
     MLAPI_PORT=5000
 
 
-LABEL com.github.baudneo.es_version=${ES_VERSION}
+LABEL com.github.baudneo.es-hwaccel_version=${ES_VERSION}
 
 EXPOSE 443/tcp
 EXPOSE 9000/tcp
