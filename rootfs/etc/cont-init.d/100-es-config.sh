@@ -5,24 +5,31 @@ program_name="es-config"
 
 # Install es config if not existing
 if [ ! -f "/config/zmeventnotification.ini" ]; then
-  echo "Copying ES Configuration" | init "[${program_name}] "
+  echo "Copying Neo ZMES Configuration" | init "[${program_name}] "
+  # .ini and .yml files
   s6-setuidgid www-data \
     cp -r /zoneminder/defaultconfiges/* /config
-
-fi
-pyzm_check=$(python3 -m pip list | grep "^neo-pyzm")
-if [ -z "$pyzm_check" ]; then
-  echo "Installing neo-pyzm" | info "[${program_name}] "
-    python3 -m pip install git+https://github.com/baudneo/pyzm.git
-fi
-if [ ! -f "/config/objectconfig.yml" ]; then
-  echo "Copying Object Detection (Hooks) Configuration with Secrets" | info "[${program_name}] "
+  # tools
   s6-setuidgid www-data \
-    cp -r /zoneminder/defaultconfiges/hooks/objectconfig.yml /config
+    cp -r /zoneminder/estools /config
+fi
+if [ ! -d "/config/known_faces" ] || [ ! -d "/config/unknown_faces" ]; then
+  echo "Creating (un)known faces directories" | init "[${program_name}] "
+  s6-setuidgid www-data \
+    mkdir /config/known_faces \
+    /config/unknown_faces
+fi
+
+if [ ! -f "/config/objectconfig.yml" ]; then
+  echo "Copying Object Detection (Hooks) Configuration with Secrets" | init "[${program_name}] "
+  s6-setuidgid www-data \
+    cp /zoneminder/defaultconfiges/objectconfig.yml /config
+  s6-setuidgid www-data \
+    cp /zoneminder/defaultconfiges/zm_secrets.yml /config
 fi
 
 echo "Setting ES ZoneMinder URL settings..." | info "[${program_name}] "
-sed -i "/^\[secrets\]$/,/^\[/ s|^ZMES_PICTURE_URL.*=.*|ZMES_PICTURE_URL=${ZMES_PICTURE_URL}" /config/secrets.ini
+sed -i "/^\[secrets\]$/,/^\[/ s|^ZMES_PICTURE_URL.*=.*|ZMES_PICTURE_URL=${ZMES_PICTURE_URL}|" /config/secrets.ini
 sed -i "/^\[secrets\]$/,/^\[/ s|^ZM_PORTAL.*=.*|ZM_PORTAL=https://${ES_COMMON_NAME}|" /config/secrets.ini
 
 echo "Setting ES ZoneMinder Auth settings..." | info "[${program_name}] "
@@ -33,7 +40,7 @@ fi
 sed -i "/^\[auth\]$/,/^\[/ s|^enable.*=.*|enable=${enable_auth}|" /config/zmeventnotification.ini
 
 echo "Configuring Object Detection (Hooks) for MLAPI communication..." | info "[${program_name}] "
-sed -i "s/base_data_path: .*$/base_data_path: \'/config\'/g" /config/objectconfig.yml
+sed -i "s|base_data_path: .*|base_data_path: /config|g" /config/objectconfig.yml
 
 
 echo "Configuring ZoneMinder Common Name in Nginx Config" | info "[${program_name}] "

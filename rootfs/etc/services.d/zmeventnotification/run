@@ -6,7 +6,7 @@
 # Runs ES in foreground
 # ==============================================================================
 
-ES_FLAGS="--config /config/zmeventnotification.ini"
+ES_FLAGS="--config /config/zmeventnotification.ini --from-docker"
 
 if [ "${ES_DEBUG_ENABLED}" -eq 1 ]; then
   echo "Enabling ES Debug!" | info

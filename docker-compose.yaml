@@ -1,4 +1,4 @@
-version: '3'
+version: '3.6'
 
 services:
   db:
@@ -12,11 +12,12 @@ services:
     environment:
       - MYSQL_DATABASE=zm
     env_file:
-      - ../.env
+      - ./.env
 
   zoneminder:
     container_name: zoneminder
-    image: ghcr.io/zoneminder-containers/eventserver-mlapimlapi:latest
+#    image: ghcr.io/baudneo/eventserver-mlapi:latest
+    image: baudneo/containers-testing:ES
     restart: always
     stop_grace_period: 45s
     depends_on:
@@ -31,12 +32,18 @@ services:
       - ./zm/data:/data
       - ./zm/config:/config
       - ./zm/log:/log
+      #    Also possible to upgrade pyzm by replacing it with the pyzm folder from the repo
+      #    The file structure is pyzm/ ->
+      #                                   /helpers
+      #                                   /ml
+      #                                   api.py, ZMLog.py, ZMMemory.py, ZMEventNotification.py (some other files depending on version)
+#      - ./zm/pyzm:/usr/local/lib/python3.8/dist-packages/pyzm
       - type: tmpfs
         target: /dev/shm
         tmpfs:
           size: 1000000000
     env_file:
-      - ../.env
+      - ./.env
 #    environment:
 #      - ZM_SERVER_HOST=zoneminder1
 
