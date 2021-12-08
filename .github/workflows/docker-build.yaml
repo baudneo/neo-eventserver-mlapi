@@ -237,14 +237,14 @@ jobs:
         registry:
           - {
             url: "https://index.docker.io/v1/",
-            username: DOCKER_USERNAME,
-            password: DOCKER_PASSWORD,
+            username: ${{ secrets.GCHR_USERNAME }},
+            password: ${{ secrets.GITHUB_TOKEN }},
             repo: baudneo/eventserver-mlapi
           }
           - {
-            url: ghcr.io/baudneo/eventserver-mlapi",
-            username: GCHR_USERNAME,
-            password: GHCR_PAT,
+            url: ghcr.io/baudneo,
+            username: ${{ secrets.GCHR_USERNAME }},
+            password: ${{ secrets.GITHUB_TOKEN }},
             repo: ghcr.io/baudneo/eventserver-mlapi
           }
     steps:
@@ -325,7 +325,7 @@ jobs:
             repo: baudneo/eventserver-mlapi
           }
           - {
-            url: ghcr.io/baudneo/eventserver-mlapi,
+            url: ghcr.io/baudneo,
             username: ${{ secrets.GCHR_USERNAME }},
             password: ${{ secrets.GITHUB_TOKEN }},
             repo: ghcr.io/baudneo/eventserver-mlapi
@@ -467,7 +467,7 @@ jobs:
             repo: baudneo/eventserver-mlapi
           }
           - {
-            url: ghcr.io/baudneo/eventserver-mlapi,
+            url: ghcr.io/baudneo,
             username: ${{ secrets.GCHR_USERNAME }},
             password: ${{ secrets.GITHUB_TOKEN }},
             repo: ghcr.io/baudneo/eventserver-mlapi
