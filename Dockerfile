@@ -165,7 +165,6 @@ ENV \
 
 
 LABEL com.github.baudneo.es_version=${ES_VERSION}
-MAINTAINER="Baudneo <baudneo@protonmail.com>"
 # 80 exposed by zoneminder image already
 EXPOSE 443/tcp
 EXPOSE 9000/tcp
