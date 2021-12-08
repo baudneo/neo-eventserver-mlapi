@@ -4,7 +4,7 @@
 program_name="es-certificate-gen"
 
 if [[ ! -f /config/ssl/cert.cer || ! -f /config/ssl/key.pem ]]; then
-  echo "Generating Self-Signed Certificates because ssl/cert.cer or ssl/key.pem does not exist!" | info "[${program_name}] "
+  echo "Generating Self-Signed Certificates (${ES_COMMON_NAME}) because ssl/cert.cer or ssl/key.pem does not exist!" | info "[${program_name}] "
   mkdir -p /config/ssl
   openssl req -x509 -nodes -days 4096 -newkey rsa:2048 -keyout /config/ssl/key.pem -out /config/ssl/cert.cer -subj "/CN=${ES_COMMON_NAME}"
 else
@@ -26,5 +26,5 @@ if [ "${ES_ENABLE_DHPARAM}" -eq 1 ]; then
     echo "Skipping nginx dhparam configuration because it already exists..." | info "[${program_name}] "
   fi
 else
-  echo "Skipping dhparam setup because ES_ENABLE_DHPARAM is ${ES_ENABLE_DHPARAM}"
+  echo "Skipping dhparam setup because ES_ENABLE_DHPARAM=${ES_ENABLE_DHPARAM}"
 fi

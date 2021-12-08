@@ -25,19 +25,19 @@ jobs:
           elif [[ "${{ github.event.client_payload.tagged }}" == "true" ]]; then
               # Build tag/release version
               ES_VERSION=$(wget \
-                -qO - https://api.github.com/repos/ZoneMinder/zmeventnotification/releases/latest \
+                -qO - https://api.github.com/repos/baudneo/zmeventnotification/releases/latest \
                 | awk '/tag_name/{print $4;exit}' FS='[""]')
               ZM_VERSION=${{ github.event.client_payload.zm_version }}
           else
             # Build from latest ES commit
             ES_VERSION=$(wget \
-              -qO - https://api.github.com/repos/ZoneMinder/zmeventnotification/commits/master \
+              -qO - https://api.github.com/repos/baudneo/zmeventnotification/commits/master \
               | awk '/sha/{print $4;exit}' FS='[""]')
             ZM_VERSION="main"
           fi
           echo "::set-output name=zm_version::${ZM_VERSION}"
           echo "::set-output name=es_version::${ES_VERSION}"
-          echo Building with ZM "${ZM_VERSION}" and ES "${ES_VERSION}"
+          echo Building with ZM "${ZM_VERSION}" and Neo ES "${ES_VERSION}"
 
   build:
     name: Build Docker Image
@@ -213,7 +213,7 @@ jobs:
         with:
           tag_name: zm_v${{ needs.getversion.outputs.zm_version }}-es_${{ needs.getversion.outputs.es_version }}
           files: ci-*/ci-*.tar.gz
-          body: Automated release of ZoneMinder v${{ needs.getversion.outputs.zm_version }} with event server ${{ needs.getversion.outputs.es_version }}
+          body: Automated release of ZoneMinder v${{ needs.getversion.outputs.zm_version }} with Neo event server (and hooks for mlapi) ${{ needs.getversion.outputs.es_version }}
           draft: false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -242,7 +242,7 @@ jobs:
             repo: baudneo/eventserver-mlapi
           }
           - {
-            url: ghcr.io/zoneminder-containers,
+            url: ghcr.io/baudneo/eventserver-mlapi",
             username: GCHR_USERNAME,
             password: GHCR_PAT,
             repo: ghcr.io/baudneo/eventserver-mlapi
@@ -325,7 +325,7 @@ jobs:
             repo: baudneo/eventserver-mlapi
           }
           - {
-            url: ghcr.io/zoneminder-containers,
+            url: ghcr.io/baudneo/eventserver-mlapi,
             username: GCHR_USERNAME,
             password: GHCR_PAT,
             repo: ghcr.io/baudneo/eventserver-mlapi
@@ -467,7 +467,7 @@ jobs:
             repo: baudneo/eventserver-mlapi
           }
           - {
-            url: ghcr.io/zoneminder-containers,
+            url: ghcr.io/baudneo/eventserver-mlapi,
             username: GCHR_USERNAME,
             password: GHCR_PAT,
             repo: ghcr.io/baudneo/eventserver-mlapi

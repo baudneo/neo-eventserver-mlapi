@@ -6,17 +6,15 @@
 # Runs ES in foreground
 # ==============================================================================
 
-ES_FLAGS="--config /config/zmeventnotification.ini --from-docker"
+ES_FLAGS=("--docker" "--config=/config/zmeventnotification.ini")
 
 if [ "${ES_DEBUG_ENABLED}" -eq 1 ]; then
   echo "Enabling ES Debug!" | info
-  ES_FLAGS="${ES_FLAGS} --debug"
+  ES_FLAGS+=("--debug")
 fi
 
-echo "Waiting for ZoneMinder to start" | info
+echo "Waiting for ZoneMinder to start..." | info
 /bin/s6-svwait -U /var/run/s6/services/zoneminder
 
-echo "Starting Event Server..." | info
-fdmove -c 1 3 \
-  /usr/bin/zmeventnotification.pl \
-    ${ES_FLAGS}
+echo "Starting Event Server with FLAGS = ${ES_FLAGS[*]}" | info
+fdmove -c 1 3 /usr/bin/zmeventnotification.pl "${ES_FLAGS[@]}"

@@ -76,7 +76,6 @@ RUN set -x \
     && yes | perl -MCPAN -e "install Config::IniFiles" \
     && yes | perl -MCPAN -e "install Time::Piece" \
     && yes | perl -MCPAN -e "install Net::MQTT::Simple" \
-    && yes | perl -MCPAN -e "install YAML::Tiny" \
     && yes | perl -MCPAN -e "install YAML::XS"
 
 
@@ -122,10 +121,20 @@ RUN set -x \
     && sed -i "s|tinyyolo_models:.*|tinyyolo_models: /config/models/tinyyolov|" /zoneminder/defaultconfiges/objectconfig.yml \
     && sed -i "s|known_images_path:.*|known_images_path: /config/known_faces|" /zoneminder/defaultconfiges/objectconfig.yml \
     && sed -i "s|unknown_images_path:.*|unknown_images_path: /config/unknown_faces|" /zoneminder/defaultconfiges/objectconfig.yml
-# Fix default es secrets
+# Fix default es secrets and zm_secrets.yml
 RUN set -x \
     && sed -i "/^\[secrets\]$/,/^\[/ s|^ES_CERT_FILE.*=.*|ES_CERT_FILE=/config/ssl/cert.cer|" /zoneminder/defaultconfiges/secrets.ini \
-    && sed -i "/^\[secrets\]$/,/^\[/ s|^ES_KEY_FILE.*=.*|ES_KEY_FILE=/config/ssl/key.pem|" /zoneminder/defaultconfiges/secrets.ini
+    && sed -i "/^\[secrets\]$/,/^\[/ s|^ES_KEY_FILE.*=.*|ES_KEY_FILE=/config/ssl/key.pem|" /zoneminder/defaultconfiges/secrets.ini \
+    && sed -i "s|^ZM_PORTAL:.*|ZM_PORTAL: https://${ES_COMMON_NAME}|" /zoneminder/defaultconfiges/zm_secrets.yml \
+    && sed -i "s|^ZM_API_PORTAL:.*|ZM_API_PORTAL: https://${ES_COMMON_NAME}/api|" /zoneminder/defaultconfiges/zm_secrets.yml \
+    && sed -i "s|^ES_CERT_FILE.*:.*|ES_CERT_FILE: /config/ssl/cert.cer|" /zoneminder/defaultconfiges/zm_secrets.yml \
+    && sed -i "s|^ES_KEY_FILE.*:.*|ES_KEY_FILE: /config/ssl/key.pem|" /zoneminder/defaultconfiges/zm_secrets.yml \
+    && sed -i "s|^ML_USER.*:.*|ML_USER: ${MLAPIDB_USER}|" /zoneminder/defaultconfiges/zm_secrets.yml \
+    && sed -i "s|^ML_PASSWORD.*:.*|ML_PASSWORD: ${MLAPIDB_PASS}|" /zoneminder/defaultconfiges/zm_secrets.yml \
+    && sed -i "s|^CONFIG_FILE.*=.*|CONFIG_FILE=/config/objectconfig.yml|" /var/lib/zmeventnotification/bin/zm_event_start.sh \
+    && sed -i "s|^CONFIG_FILE.*=.*|CONFIG_FILE=/config/objectconfig.yml|" /var/lib/zmeventnotification/bin/zm_event_end.sh
+
+# Install Neo PYZM
 COPY --from=pyzmdl /pyzmdownloader /tmp/pyzm
 RUN set -x \
     && cd /tmp/pyzm \
@@ -134,7 +143,10 @@ RUN set -x \
     && python3 setup.py install \
     && rm -rf /tmp/pyzm \
     && rm -rf /root/.cache/pip
-
+# Clean up
+RUN  apt-get remove -y build-essential \
+    && apt-get clean -y \
+    && rm -rf /var/lib/apt/lists/*
 # Copy rootfs
 COPY --from=rootfs-converter /rootfs /
 
@@ -147,10 +159,12 @@ ENV \
     MLAPIDB_USER=mlapi_user\
     MLAPIDB_PASS=ZoneMinder\
     MLAPI_CONTAINER=mlapi\
-    MLAPI_PORT=5000
+    MLAPI_PORT=5000\
+    PYZM_CONFPATH=/config\
+    TZ=America/Chicago
 
 
 LABEL com.github.baudneo.es_version=${ES_VERSION}
-
+# 80 exposed by zoneminder image already
 EXPOSE 443/tcp
 EXPOSE 9000/tcp

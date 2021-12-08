@@ -23,30 +23,25 @@ services:
     depends_on:
       - db
     ports:
-      - 80:80
-      - 443:443
-      - 9000:9000
+      - "80:80"
+      - "443:443"
+      - "9000:9000"
     networks:
       - zoneminder
     volumes:
       - ./zm/data:/data
       - ./zm/config:/config
       - ./zm/log:/log
-      #    Also possible to upgrade pyzm by replacing it with the pyzm folder from the repo
-      #    The file structure is pyzm/ ->
-      #                                   /helpers
-      #                                   /ml
-      #                                   api.py, ZMLog.py, ZMMemory.py, ZMEventNotification.py (some other files depending on version)
-#      - ./zm/pyzm:/usr/local/lib/python3.8/dist-packages/pyzm
       - type: tmpfs
         target: /dev/shm
         tmpfs:
           size: 1000000000
     env_file:
       - ./.env
-#    environment:
+    environment:
+       # ES 'hooks' needs this env var configured
+       - PYZM_CONFPATH=/config
 #      - ZM_SERVER_HOST=zoneminder1
-
 
 networks:
   zoneminder:
