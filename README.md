@@ -1,6 +1,7 @@
 # eventserver-mlapi
 
-[//]: # ([![Docker Build]&#40;https://github.com/baudneo/eventserver-base/actions/workflows/docker-build.yaml/badge.svg&#41;]&#40;https://github.com/zoneminder-containers/eventserver-base/actions/workflows/docker-build.yaml&#41;)
+[![Docker Build](https://github.com/baudneo/eventserver-mlapi/actions/workflows/docker-build.yaml/badge.svg)](https://github.com/baudneo/eventserver-mlapi/actions/workflows/docker-build.yaml)
+
 ![Status](https://img.shields.io/badge/Status-BETA-yellow)
 
 # Why
