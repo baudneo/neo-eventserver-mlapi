@@ -236,15 +236,15 @@ jobs:
           - arm64
         registry:
           - {
-            url: "https://index.docker.io/v1/",
-            username: ${{ secrets.GCHR_USERNAME }},
-            password: ${{ secrets.GITHUB_TOKEN }},
+            url: "https://index.docker.io/v1/"
+            username: ${{ secrets.GCHR_USERNAME }}
+            password: ${{ secrets.GITHUB_TOKEN }}
             repo: baudneo/eventserver-mlapi
           }
           - {
             url: ghcr.io/baudneo,
-            username: ${{ secrets.GCHR_USERNAME }},
-            password: ${{ secrets.GITHUB_TOKEN }},
+            username: ${{ secrets.GCHR_USERNAME }}
+            password: ${{ secrets.GITHUB_TOKEN }}
             repo: ghcr.io/baudneo/eventserver-mlapi
           }
     steps:
@@ -320,14 +320,14 @@ jobs:
         registry:
           - {
             url: "https://index.docker.io/v1/",
-            username: ${{ secrets.DOCKER_USERNAME }},
-            password: ${{ secrets.DOCKER_PASSWORD }},
+            username: ${{ secrets.DOCKER_USERNAME }}
+            password: ${{ secrets.DOCKER_PASSWORD }}
             repo: baudneo/eventserver-mlapi
           }
           - {
             url: ghcr.io/baudneo,
-            username: ${{ secrets.GCHR_USERNAME }},
-            password: ${{ secrets.GITHUB_TOKEN }},
+            username: ${{ secrets.GCHR_USERNAME }}
+            password: ${{ secrets.GITHUB_TOKEN }}
             repo: ghcr.io/baudneo/eventserver-mlapi
           }
     steps:
@@ -462,14 +462,14 @@ jobs:
         registry:
           - {
             url: "https://index.docker.io/v1/",
-            username: ${{ secrets.DOCKER_USERNAME }},
-            password: ${{ secrets.DOCKER_PASSWORD }},
+            username: ${{ secrets.DOCKER_USERNAME }}
+            password: ${{ secrets.DOCKER_PASSWORD }}
             repo: baudneo/eventserver-mlapi
           }
           - {
             url: ghcr.io/baudneo,
-            username: ${{ secrets.GCHR_USERNAME }},
-            password: ${{ secrets.GITHUB_TOKEN }},
+            username: ${{ secrets.GCHR_USERNAME }}
+            password: ${{ secrets.GITHUB_TOKEN }}
             repo: ghcr.io/baudneo/eventserver-mlapi
           }
         images:
