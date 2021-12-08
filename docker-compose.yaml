@@ -16,8 +16,7 @@ services:
 
   zoneminder:
     container_name: zoneminder
-#    image: ghcr.io/baudneo/eventserver-mlapi:latest
-    image: baudneo/containers-testing:ES
+    image: hub.docker.com/baudneo/eventserver-base:testing
     restart: always
     stop_grace_period: 45s
     depends_on:

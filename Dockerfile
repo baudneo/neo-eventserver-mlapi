@@ -55,7 +55,7 @@ RUN set -x \
 #                                                                   #
 #####################################################################
 #FROM ghcr.io/zoneminder-containers/zoneminder-base:${ZM_VERSION}
-FROM baudneo/containers-testing:ZM
+FROM hub.docker.com/baudneo/zoneminder-base:testing
 ARG ES_VERSION
 ARG MLAPI_CONTAINER
 ARG MLAPI_PORT
@@ -165,6 +165,7 @@ ENV \
 
 
 LABEL com.github.baudneo.es_version=${ES_VERSION}
+MAINTAINER="Baudneo <baudneo@protonmail.com>"
 # 80 exposed by zoneminder image already
 EXPOSE 443/tcp
 EXPOSE 9000/tcp
