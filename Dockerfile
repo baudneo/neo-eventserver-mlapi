@@ -55,7 +55,7 @@ RUN set -x \
 #                                                                   #
 #####################################################################
 #FROM ghcr.io/zoneminder-containers/zoneminder-base:${ZM_VERSION}
-FROM hub.docker.com/baudneo/zoneminder-base:testing
+FROM baudneo/zoneminder-base:testing
 ARG ES_VERSION
 ARG MLAPI_CONTAINER
 ARG MLAPI_PORT
