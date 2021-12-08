@@ -33,23 +33,20 @@ if [ "$(mysql -u"${MYSQL_USER}" -p"${MYSQL_PASSWORD}" -h"${MYSQL_HOST}" zm \
   insert_command+="UPDATE Config SET Value = '${random_string}' WHERE Name = 'ZM_AUTH_HASH_SECRET';"
 
 fi
+
 if [ "$ES_DEBUG_ENABLED" -eq 1 ]; then
     echo "ES_DEBUG_ENABLED flag is enabled, setting DEBUG via the DB" | info "[$program_name] "
-    mysql -u"${MYSQL_USER}" -p"${MYSQL_PASSWORD}" -h"${MYSQL_HOST}" zm -e \
-    "SELECT Value FROM Config WHERE Name = 'ZM_AUTH_HASH_SECRET';"
-    insert_command+="UPDATE Config SET Value = 5 WHERE Name = 'ZM_LOG_LEVEL_SYSLOG';"
     insert_command+="UPDATE Config SET Value = 1 WHERE Name = 'ZM_LOG_DEBUG';"
     # This is 0 or 1, does not support 'levels'
     insert_command+="UPDATE Config SET Value = 1 WHERE Name = 'ZM_LOG_DEBUG_LEVEL';"
     insert_command+="UPDATE Config SET Value = '_zmeventnotification' WHERE Name = 'ZM_LOG_DEBUG_TARGET';"
     elif [ "$ES_DEBUG_ENABLED" -eq 0 ]; then
-    # These settings make INFO logs appear in syslog for zmeventnotfication and zmc_
-    insert_command+="UPDATE Config SET Value = 5 WHERE Name = 'ZM_LOG_LEVEL_SYSLOG';"
     insert_command+="UPDATE Config SET Value = 0 WHERE Name = 'ZM_LOG_DEBUG';"
-    # This is 0 or 1, does not support 'levels'
     insert_command+="UPDATE Config SET Value = 0 WHERE Name = 'ZM_LOG_DEBUG_LEVEL';"
     insert_command+="UPDATE Config SET Value = '' WHERE Name = 'ZM_LOG_DEBUG_TARGET';"
 fi
+# Always keep syslog enabled
+insert_command+="UPDATE Config SET Value = 5 WHERE Name = 'ZM_LOG_LEVEL_SYSLOG';"
 # Always keep file logging off ?
 insert_command+="UPDATE Config SET Value = 0 WHERE Name = 'ZM_LOG_DEBUG_FILE';"
 insert_command+="UPDATE Config SET Value = -5 WHERE Name = 'ZM_LOG_LEVEL_FILE';"
