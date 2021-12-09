@@ -16,7 +16,7 @@ services:
 
   zoneminder:
     container_name: zoneminder
-    image: hub.docker.com/baudneo/eventserver-base:testing
+    image: ghcr.io/baudneo/eventserver-mlapi:latest
     restart: always
     stop_grace_period: 45s
     depends_on:
@@ -25,6 +25,8 @@ services:
       - "80:80"
       - "443:443"
       - "9000:9000"
+#    extra_hosts:
+#      - "192.168.2.34:zm.example.com"
     networks:
       - zoneminder
     volumes:
